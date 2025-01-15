@@ -5,9 +5,13 @@ import { AuthUserUseCase } from '../application/use-cases/auth-user.usecase';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthUser } from './adapters/auth-user.adapter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../domain/entities/user.entity';
+import { Role } from '../domain/entities/role.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User, Role]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
