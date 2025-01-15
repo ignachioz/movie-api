@@ -9,7 +9,10 @@ export class AuthUser implements UserRepository {
       id: '1',
       username: 'ignachioz',
       password: '1234',
-      roles: ['ADMINISTRADOR', 'REGULAR'],
+      roles: [
+        { name: 'ADMINISTRADOR', id: 1 },
+        { name: 'REGULAR', id: 1 },
+      ],
     });
   }
 
