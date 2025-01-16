@@ -7,7 +7,7 @@ import { UserRepository } from 'src/users/domain/ports/user.repository.port';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class AuthUser implements UserRepository {
+export class AuthUserAdapter implements UserRepository {
   constructor(
     @InjectRepository(User) private userDBRepository: Repository<User>,
     @InjectRepository(Role) private roleDBRepository: Repository<Role>,
