@@ -8,6 +8,14 @@ export class MovieAdapter implements MovieRepository {
     @InjectRepository(Movie) private movieDBRepository: Repository<Movie>,
   ) {}
 
+  async saveMovie(movie: Movie): Promise<Movie> {
+    try {
+      return await this.movieDBRepository.save(movie);
+    } catch (e) {
+      throw new DatabaseException('SAVE MOVIE:' + e);
+    }
+  }
+
   async findAllMovies(): Promise<Array<Movie>> {
     try {
       return await this.movieDBRepository.find({
@@ -24,10 +32,10 @@ export class MovieAdapter implements MovieRepository {
     }
   }
 
-  async findMovie(title: string): Promise<Movie> {
+  async findMovieByField(field: string, value: string): Promise<Movie> {
     try {
       return this.movieDBRepository.findOne({
-        where: { title },
+        where: { [field]: value },
         relations: [
           'characters',
           'planets',
@@ -37,7 +45,7 @@ export class MovieAdapter implements MovieRepository {
         ],
       });
     } catch (e) {
-      throw new DatabaseException(`FIND MOVIE (${title}):` + e);
+      throw new DatabaseException(`FIND MOVIE BY: ${field} - (${value}):` + e);
     }
   }
 }
