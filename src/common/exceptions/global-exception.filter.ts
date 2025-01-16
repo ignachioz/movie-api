@@ -9,6 +9,7 @@ import {
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
+    console.log('EXCEPTION: ', exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const status =

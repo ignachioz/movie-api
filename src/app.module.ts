@@ -6,6 +6,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './common/exceptions/global-exception.filter';
 import { MovieModule } from './movies/movie.module';
 import { JwtModule } from '@nestjs/jwt';
+import { BadRequestExceptionFilter } from './common/exceptions/bad-request-exception.filter';
 
 @Module({
   imports: [
@@ -33,6 +34,10 @@ import { JwtModule } from '@nestjs/jwt';
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: BadRequestExceptionFilter,
     },
   ],
 })

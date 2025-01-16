@@ -12,8 +12,8 @@ export class GetMovieUseCase {
     private readonly movieRepository: MovieRepository,
   ) {}
 
-  async execute(title: string): Promise<MovieDto> {
-    const movie = await this.movieRepository.findMovie(title);
+  async execute(id: string): Promise<MovieDto> {
+    const movie = await this.movieRepository.findMovieByField('id', id);
     return MovieMapper.movieToDto(movie);
   }
 }

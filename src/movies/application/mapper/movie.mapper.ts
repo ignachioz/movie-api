@@ -10,6 +10,7 @@ import { PlanetDto } from '../dto/planet.dto';
 import { SpecieDto } from '../dto/specie.dto';
 import { StarshipDto } from '../dto/starship.dto';
 import { VehicleDto } from '../dto/vehicle.dto';
+import { StatusOkDto } from '../dto/status-ok.dto';
 
 export class MovieMapper {
   public static moviesToDto(movies: Array<Movie>): Array<MovieDto> {
@@ -64,5 +65,9 @@ export class MovieMapper {
 
   private static vehicleToDto(vehicle: Vehicle): VehicleDto {
     return new StarshipDto(vehicle.id, vehicle.url);
+  }
+
+  public static statusOKToDto(message: string): StatusOkDto {
+    return new StatusOkDto(message);
   }
 }
