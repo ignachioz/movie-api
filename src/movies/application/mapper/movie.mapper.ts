@@ -13,14 +13,10 @@ import { VehicleDto } from '../dto/vehicle.dto';
 
 export class MovieMapper {
   public static moviesToDto(movies: Array<Movie>): Array<MovieDto> {
-    console.log('MOVIES DTO: ' + JSON.stringify(movies));
-    const response = movies.map((movie) => this.movieToDto(movie));
-    console.log('{RESPOSNE;: ' + JSON.stringify(response));
-    return response;
+    return movies.map((movie) => this.movieToDto(movie));
   }
 
   public static movieToDto(movie: Movie): MovieDto {
-    console.log('MOVIEEEE: ' + JSON.stringify(movie));
     return new MovieDto(
       movie.id,
       movie.characters

@@ -6,14 +6,14 @@ import {
 import { MovieMapper } from '../mapper/movie.mapper';
 import { MovieDto } from '../dto/movie.dto';
 
-export class GetMovieUseCase {
+export class GetMoviesUseCase {
   constructor(
     @Inject(MovieRepositorySymbol)
     private readonly movieRepository: MovieRepository,
   ) {}
 
-  async execute(title: string): Promise<MovieDto> {
-    const movie = await this.movieRepository.findMovie(title);
-    return MovieMapper.movieToDto(movie);
+  async execute(): Promise<Array<MovieDto>> {
+    const movies = await this.movieRepository.findAllMovies();
+    return MovieMapper.moviesToDto(movies);
   }
 }

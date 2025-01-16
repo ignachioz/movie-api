@@ -17,6 +17,7 @@ export class AuthUserAdapter implements UserRepository {
     try {
       const user: User = await this.userDBRepository.findOneOrFail({
         where: { username },
+        relations: ['roles'],
       });
       return user;
     } catch (e) {

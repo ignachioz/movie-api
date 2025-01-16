@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './common/exceptions/global-exception.filter';
+import { MovieModule } from './movies/movie.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { GlobalExceptionFilter } from './common/exceptions/global-exception.filt
       inject: [ConfigService],
     }),
     UserModule,
+    JwtModule,
+    MovieModule,
   ],
   controllers: [],
   providers: [

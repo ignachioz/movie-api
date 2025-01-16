@@ -1,4 +1,8 @@
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorator/roles.decorator';
 
@@ -12,12 +16,20 @@ export class RolesGuard implements CanActivate {
     );
     if (!rolesRequired) return true;
     const { user }: { user: UserToken } = context.switchToHttp().getRequest();
-    const hasRole = rolesRequired.some((role) => user.roles.includes(role));
-    if (!hasRole) throw new Error("Doesn't have role required");
+    const hasRole = rolesRequired.some((role) =>
+      user.roles.some((userRole) => userRole.name == role),
+    );
+    if (!hasRole)
+      throw new InternalServerErrorException("Doesn't have role required");
     return true;
   }
 }
 
 class UserToken {
-  roles: Array<String>;
+  roles: Array<Role>;
+}
+
+class Role {
+  id: string;
+  name: string;
 }
