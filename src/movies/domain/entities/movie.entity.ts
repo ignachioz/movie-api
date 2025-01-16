@@ -27,7 +27,7 @@ export class Movie {
       referencedColumnName: 'id',
     },
   })
-  characters: string[];
+  characters: Character[];
   @Column()
   created: string;
   @Column()
@@ -50,7 +50,7 @@ export class Movie {
       referencedColumnName: 'id',
     },
   })
-  planets: string[];
+  planets: Planet[];
   @Column()
   producer: string;
   @Column()
@@ -67,7 +67,7 @@ export class Movie {
       referencedColumnName: 'id',
     },
   })
-  species: string[];
+  species: Specie[];
   @ManyToMany(() => Starship)
   @JoinTable({
     name: 'movie_starship',
@@ -80,7 +80,7 @@ export class Movie {
       referencedColumnName: 'id',
     },
   })
-  starships: string[];
+  starships: Starship[];
   @Column()
   title: string;
   @Column()
@@ -97,5 +97,5 @@ export class Movie {
       referencedColumnName: 'id',
     },
   })
-  vehicles: string[];
+  vehicles: Vehicle[];
 }
