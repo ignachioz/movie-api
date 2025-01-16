@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DatabaseException } from 'src/common/exceptions/database-exception.filter';
 import { Role } from 'src/users/domain/entities/role.entity';
 import { User } from 'src/users/domain/entities/user.entity';
 import { UserRepository } from 'src/users/domain/ports/user.repository.port';
@@ -19,21 +20,8 @@ export class AuthUser implements UserRepository {
       });
       return user;
     } catch (e) {
-      throw new Error('' + e);
+      throw new DatabaseException('FIND USER:' + e);
     }
-  }
-
-  async registerUser(username: string, password: string): Promise<User> {
-    const userRegister = new User();
-    const roles = await this.roleDBRepository.findBy({ name: 'REGULAR' });
-    if (roles.length == 0) throw new Error('ROLE NOT FOUND');
-    const userInDB = this.userDBRepository.findOne({ where: { username } });
-    if (userInDB) throw new Error('USER EXIST');
-    userRegister.username = username;
-    userRegister.password = password;
-    userRegister.roles = roles;
-    const userSaved = await this.userDBRepository.save(userRegister);
-    return userSaved;
   }
 
   async saveUser(user: User): Promise<User> {
@@ -41,7 +29,7 @@ export class AuthUser implements UserRepository {
       const userDB = await this.userDBRepository.save(user);
       return userDB;
     } catch (e) {
-      console.log('FAIL SAVE USER');
+      throw new DatabaseException('SAVE USER:' + e);
     }
   }
 
@@ -52,7 +40,7 @@ export class AuthUser implements UserRepository {
       });
       return roles;
     } catch (e) {
-      throw new Error('' + e);
+      throw new DatabaseException('FIND ROLE:' + e);
     }
   }
 }
