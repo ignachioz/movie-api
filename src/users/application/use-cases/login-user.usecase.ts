@@ -23,6 +23,7 @@ export class LoginUserCase {
 
   async login(username: string, password: string): Promise<JwtDto> {
     const user: User = await this.userRepository.findUser(username);
+    if (!user) throw new NotFoundException("USER DOESN'T EXIST");
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) throw new Error('INVALID CREDENTIALS');
     const jwt = await this.jwtService.signAsync({

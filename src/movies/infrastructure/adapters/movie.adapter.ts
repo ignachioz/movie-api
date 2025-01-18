@@ -1,6 +1,6 @@
 import { Movie } from 'src/movies/domain/entities/movie.entity';
 import { MovieRepository } from './../../domain/ports/movie.repository.port';
-import { DatabaseException } from 'src/common/exceptions/database-exception.filter';
+import { DatabaseException } from 'src/common/exceptions/database-exception';
 import { CreateMovieDto } from 'src/movies/domain/dto/create-movie.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
