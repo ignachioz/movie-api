@@ -1,31 +1,18 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
 import { Role } from './role.entity';
+import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
-@Entity({ name: 'user' })
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  @Column({ type: 'text', nullable: false })
+@Schema()
+export class User extends Document {
+  @Prop({ type: String, default: uuidv4 })
+  _id: string;
+  @Prop()
   username: string;
-  @Column({ type: 'text', nullable: false })
+  @Prop()
   password: string;
-  @ManyToMany(() => Role)
-  @JoinTable({
-    name: 'user_role',
-    joinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'role_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @Prop()
   roles: Role[];
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);

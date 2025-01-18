@@ -1,16 +1,19 @@
 import { Movie } from 'src/movies/domain/entities/movie.entity';
 import { MovieRepository } from './../../domain/ports/movie.repository.port';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { DatabaseException } from 'src/common/exceptions/database-exception.filter';
+import { CreateMovieDto } from 'src/movies/domain/dto/create-movie.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { UpdateMovieDto } from 'src/movies/domain/dto/update-movie.dto';
 export class MovieAdapter implements MovieRepository {
   constructor(
-    @InjectRepository(Movie) private movieDBRepository: Repository<Movie>,
+    @InjectModel(Movie.name) private movieDBRepository: Model<Movie>,
   ) {}
 
-  async saveMovie(movie: Movie): Promise<Movie> {
+  async saveMovie(movie: CreateMovieDto): Promise<Movie> {
     try {
-      return await this.movieDBRepository.save(movie);
+      const createMovie = new this.movieDBRepository(movie);
+      return await this.movieDBRepository.create(createMovie);
     } catch (e) {
       throw new DatabaseException('SAVE MOVIE:' + e);
     }
@@ -18,15 +21,7 @@ export class MovieAdapter implements MovieRepository {
 
   async findAllMovies(): Promise<Array<Movie>> {
     try {
-      return await this.movieDBRepository.find({
-        relations: [
-          'characters',
-          'planets',
-          'species',
-          'starships',
-          'vehicles',
-        ],
-      });
+      return await this.movieDBRepository.find();
     } catch (e) {
       throw new DatabaseException('FIND ALL MOVIES:' + e);
     }
@@ -34,18 +29,32 @@ export class MovieAdapter implements MovieRepository {
 
   async findMovieByField(field: string, value: string): Promise<Movie> {
     try {
-      return this.movieDBRepository.findOne({
-        where: { [field]: value },
-        relations: [
-          'characters',
-          'planets',
-          'species',
-          'starships',
-          'vehicles',
-        ],
-      });
+      return await this.movieDBRepository.findOne({ [field]: value });
     } catch (e) {
       throw new DatabaseException(`FIND MOVIE BY: ${field} - (${value}):` + e);
+    }
+  }
+
+  async deleteMovie(id: string): Promise<void> {
+    try {
+      const result = await this.movieDBRepository.findByIdAndDelete(id);
+      if (!result) throw new Error("MOVIE DOESN'T EXIST IN DB: " + id);
+    } catch (e) {
+      throw new DatabaseException(`DELETE MOVIE - ${id}` + e);
+    }
+  }
+
+  async updateMovie(movieUpdate: UpdateMovieDto, id: string): Promise<Movie> {
+    try {
+      const result = await this.movieDBRepository.findByIdAndUpdate(
+        id,
+        { $set: movieUpdate },
+        { new: true },
+      );
+      if (!result) throw new Error("MOVIE DOESN'T EXIST IN DB: " + id);
+      return result;
+    } catch (e) {
+      throw new DatabaseException(`DELETE MOVIE - ${id}` + e);
     }
   }
 }

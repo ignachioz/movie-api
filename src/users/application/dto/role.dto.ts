@@ -1,6 +1,4 @@
-export class RoleDto {
-  constructor(
-    public id: number,
-    public name: string,
-  ) {}
+export enum RoleDto {
+  Administrator = 'ADMINISTRATOR',
+  Regular = 'REGULAR',
 }

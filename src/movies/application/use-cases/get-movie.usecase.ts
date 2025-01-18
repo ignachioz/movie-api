@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import {
   MovieRepository,
   MovieRepositorySymbol,
@@ -13,7 +13,8 @@ export class GetMovieUseCase {
   ) {}
 
   async execute(id: string): Promise<MovieDto> {
-    const movie = await this.movieRepository.findMovieByField('id', id);
+    const movie = await this.movieRepository.findMovieByField('_id', id);
+    if (!movie) throw new NotFoundException(`DON'T EXIST MOVIE: ${id}`);
     return MovieMapper.movieToDto(movie);
   }
 }

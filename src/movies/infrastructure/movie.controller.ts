@@ -3,6 +3,7 @@ import { MovieDto } from '../application/dto/movie.dto';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -14,10 +15,13 @@ import { GetMoviesUseCase } from '../application/use-cases/get-movies.usecase';
 import { GetMovieUseCase } from './../application/use-cases/get-movie.usecase';
 import { CreateMovieUseCase } from '../application/use-cases/create-movie.usecase';
 import { StatusOkDto } from '../application/dto/status-ok.dto';
-import { MovieMapper } from './mapper/movie.mapper';
-import { MovieRequestDto } from './dto/movie-request.dto';
+import { CreateMovieDto } from '../domain/dto/create-movie.dto';
 import { UpdateMovieUseCase } from '../application/use-cases/update-movie.usecase';
-import { UpdateMovieRequestDto } from './dto/update-movie-request.dto';
+import { UpdateMovieDto } from '../domain/dto/update-movie.dto';
+import { DeleteMovieUseCase } from '../application/use-cases/delete-movie.usecase';
+import { SyncMovieUseCase } from '../application/use-cases/sync-movie.usecase';
+import { Roles } from 'src/common/decorator/roles.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @Controller('movie')
 export class MovieController {
@@ -26,6 +30,8 @@ export class MovieController {
     private readonly getMovieUseCase: GetMovieUseCase,
     private readonly createMovieUseCase: CreateMovieUseCase,
     private readonly updateMovieUseCase: UpdateMovieUseCase,
+    private readonly deleteMovieUseCase: DeleteMovieUseCase,
+    private readonly syncMovieUseCase: SyncMovieUseCase,
   ) {}
 
   @Get('/all')
@@ -34,30 +40,41 @@ export class MovieController {
     return this.getMoviesUseCase.execute();
   }
 
-  @Get('/:id')
-  //@Roles('REGULAR')
-  @UseGuards(JwtAuthGuard)
+  @Get('/film/:id')
+  @Roles('REGULAR')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async getMovie(@Param('id') id: string): Promise<MovieDto> {
     return this.getMovieUseCase.execute(id);
   }
 
   @Post('/')
-  //@Roles('ADMINISTRATOR')
-  @UseGuards(JwtAuthGuard)
-  async createMovie(@Body() body: MovieRequestDto): Promise<StatusOkDto> {
-    return this.createMovieUseCase.execute(MovieMapper.movieToDomain(body));
+  @Roles('ADMINISTRATOR')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async createMovie(@Body() body: CreateMovieDto): Promise<StatusOkDto> {
+    return this.createMovieUseCase.execute(body);
   }
 
   @Patch('/:id')
-  //@Roles('ADMINISTRATOR')
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMINISTRATOR')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async updateMovie(
     @Param('id') id: string,
-    @Body() body: UpdateMovieRequestDto,
+    @Body() body: UpdateMovieDto,
   ): Promise<StatusOkDto> {
-    return this.updateMovieUseCase.execute(
-      id,
-      MovieMapper.updateMovieToDomain(body),
-    );
+    return this.updateMovieUseCase.execute(id, body);
+  }
+
+  @Delete('/:id')
+  @Roles('ADMINISTRATOR')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async deleteMovie(@Param('id') id: string): Promise<StatusOkDto> {
+    return this.deleteMovieUseCase.execute(id);
+  }
+
+  @Get('/sync-movie')
+  @Roles('ADMINISTRATOR')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async syncMovies(): Promise<StatusOkDto> {
+    return this.syncMovieUseCase.execute();
   }
 }

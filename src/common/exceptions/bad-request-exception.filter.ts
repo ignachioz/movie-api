@@ -9,7 +9,6 @@ import {
 @Catch(BadRequestException)
 export class BadRequestExceptionFilter implements ExceptionFilter {
   catch(exception: BadRequestException, host: ArgumentsHost) {
-    console.log('BAD REUEST EXCEPTION: ', exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const status = exception.getStatus() ?? HttpStatus.INTERNAL_SERVER_ERROR;

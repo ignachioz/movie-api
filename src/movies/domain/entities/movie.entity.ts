@@ -1,101 +1,38 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Character } from './character.entity';
-import { Planet } from './planet.entity';
-import { Specie } from './specie.entity';
-import { Starship } from './starship.entity';
-import { Vehicle } from './vehicle.entity';
-
-@Entity({ name: 'movie' })
-export class Movie {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  @ManyToMany(() => Character)
-  @JoinTable({
-    name: 'movie_character',
-    joinColumn: {
-      name: 'movie_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'character_id',
-      referencedColumnName: 'id',
-    },
-  })
-  characters: Character[];
-  @Column()
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
+@Schema()
+export class Movie extends Document {
+  @Prop({ type: String, default: uuidv4 })
+  _id: string;
+  @Prop()
+  characters: string[];
+  @Prop()
   created: string;
-  @Column()
+  @Prop()
   director: string;
-  @Column()
+  @Prop()
   edited: string;
-  @Column()
-  episodeId: string;
-  @Column()
+  @Prop()
+  episodeId: number;
+  @Prop()
   openingCrawl: string;
-  @ManyToMany(() => Planet)
-  @JoinTable({
-    name: 'movie_planet',
-    joinColumn: {
-      name: 'movie_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'planet_id',
-      referencedColumnName: 'id',
-    },
-  })
-  planets: Planet[];
-  @Column()
+  @Prop()
+  planets: string[];
+  @Prop()
   producer: string;
-  @Column()
+  @Prop()
   releaseDate: string;
-  @ManyToMany(() => Specie)
-  @JoinTable({
-    name: 'movie_specie',
-    joinColumn: {
-      name: 'movie_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'planet_id',
-      referencedColumnName: 'id',
-    },
-  })
-  species: Specie[];
-  @ManyToMany(() => Starship)
-  @JoinTable({
-    name: 'movie_starship',
-    joinColumn: {
-      name: 'movie_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'planet_id',
-      referencedColumnName: 'id',
-    },
-  })
-  starships: Starship[];
-  @Column()
+  @Prop()
+  species: string[];
+  @Prop()
+  starships: string[];
+  @Prop()
   title: string;
-  @Column()
+  @Prop()
   url: string;
-  @ManyToMany(() => Vehicle)
-  @JoinTable({
-    name: 'movie_vehicle',
-    joinColumn: {
-      name: 'movie_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'planet_id',
-      referencedColumnName: 'id',
-    },
-  })
-  vehicles: Vehicle[];
+  @Prop()
+  vehicles: string[];
 }
+
+export const MovieSchema = SchemaFactory.createForClass(Movie);
