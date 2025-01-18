@@ -1,47 +1,31 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { DatabaseException } from 'src/common/exceptions/database-exception.filter';
+import { CreateUserDto } from 'src/users/domain/dto/create-user.dto';
 import { Role } from 'src/users/domain/entities/role.entity';
 import { User } from 'src/users/domain/entities/user.entity';
 import { UserRepository } from 'src/users/domain/ports/user.repository.port';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthUserAdapter implements UserRepository {
-  constructor(
-    @InjectRepository(User) private userDBRepository: Repository<User>,
-    @InjectRepository(Role) private roleDBRepository: Repository<Role>,
-  ) {}
+  constructor(@InjectModel(User.name) private userDBRepository: Model<User>) {}
 
   async findUser(username: string): Promise<User> {
     try {
-      const user: User = await this.userDBRepository.findOneOrFail({
-        where: { username },
-        relations: ['roles'],
-      });
-      return user;
+      const data = await this.userDBRepository.findOne({ username }).exec();
+      return data;
     } catch (e) {
       throw new DatabaseException('FIND USER:' + e);
     }
   }
 
-  async saveUser(user: User): Promise<User> {
+  async saveUser(createUserDto: CreateUserDto): Promise<User> {
     try {
-      const userDB = await this.userDBRepository.save(user);
-      return userDB;
+      const user = new this.userDBRepository(createUserDto);
+      return await this.userDBRepository.create(user);
     } catch (e) {
       throw new DatabaseException('SAVE USER:' + e);
-    }
-  }
-
-  async findRole(name: string): Promise<Role> {
-    try {
-      const roles = await this.roleDBRepository.findOne({
-        where: { name },
-      });
-      return roles;
-    } catch (e) {
-      throw new DatabaseException('FIND ROLE:' + e);
     }
   }
 }

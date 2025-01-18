@@ -1,11 +1,13 @@
 import {
   CanActivate,
   ExecutionContext,
+  Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorator/roles.decorator';
 
+@Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
@@ -16,20 +18,13 @@ export class RolesGuard implements CanActivate {
     );
     if (!rolesRequired) return true;
     const { user }: { user: UserToken } = context.switchToHttp().getRequest();
-    const hasRole = rolesRequired.some((role) =>
-      user.roles.some((userRole) => userRole.name == role),
-    );
+    const hasRole = rolesRequired.some((role) => user.roles.includes(role));
     if (!hasRole)
-      throw new InternalServerErrorException("Doesn't have role required");
+      throw new InternalServerErrorException("Don't have role required");
     return true;
   }
 }
 
 class UserToken {
-  roles: Array<Role>;
-}
-
-class Role {
-  id: string;
-  name: string;
+  roles: Array<string>;
 }

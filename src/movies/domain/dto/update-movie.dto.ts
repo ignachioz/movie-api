@@ -1,6 +1,6 @@
-import { IsArray, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsArray, IsOptional } from 'class-validator';
 
-export class UpdateMovieRequestDto {
+export class UpdateMovieDto {
   @IsOptional()
   @IsArray()
   public characters?: string[];

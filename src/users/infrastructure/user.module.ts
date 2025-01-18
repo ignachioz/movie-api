@@ -1,17 +1,17 @@
 import { UserRepositorySymbol } from './../domain/ports/user.repository.port';
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
-import { AuthUserUseCase } from '../application/use-cases/auth-user.usecase';
+import { RegisterUserUseCase } from '../application/use-cases/register-user.usecase';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthUserAdapter } from './adapters/auth-user.adapter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../domain/entities/user.entity';
-import { Role } from '../domain/entities/role.entity';
+import { User, UserSchema } from '../domain/entities/user.entity';
+import { MongooseModule } from '@nestjs/mongoose';
+import { LoginUserCase } from '../application/use-cases/login-user.usecase';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Role]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
@@ -27,8 +27,8 @@ import { Role } from '../domain/entities/role.entity';
   ],
   controllers: [UserController],
   providers: [
-    AuthUserUseCase,
-
+    RegisterUserUseCase,
+    LoginUserCase,
     {
       provide: UserRepositorySymbol,
       useClass: AuthUserAdapter,

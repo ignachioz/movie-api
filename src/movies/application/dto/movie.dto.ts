@@ -1,25 +1,19 @@
-import { CharacterDto } from './character.dto';
-import { PlanetDto } from './planet.dto';
-import { SpecieDto } from './specie.dto';
-import { StarshipDto } from './starship.dto';
-import { VehicleDto } from './vehicle.dto';
-
 export class MovieDto {
   constructor(
     public id: string,
-    public characters: CharacterDto[],
+    public characters: string[],
     public created: string,
     public director: string,
     public edited: string,
-    public episodeId: string,
+    public episodeId: number,
     public openingCrawl: string,
-    public planets: PlanetDto[],
+    public planets: string[],
     public producer: string,
     public releaseDate: string,
-    public species: SpecieDto[],
-    public starships: StarshipDto[],
+    public species: string[],
+    public starships: string[],
     public title: string,
     public url: string,
-    public vehicles: VehicleDto[],
+    public vehicles: string[],
   ) {}
 }

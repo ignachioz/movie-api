@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty } from 'class-validator';
 
-export class MovieRequestDto {
+export class CreateMovieDto {
   @IsArray()
   public characters: string[];
   @IsNotEmpty({ message: 'Field created cannot be empty' })
