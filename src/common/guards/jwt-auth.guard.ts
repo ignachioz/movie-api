@@ -1,4 +1,8 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
@@ -13,14 +17,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     try {
       const request = context.switchToHttp().getRequest();
       const token = this.getJWT(request);
-      if (!token) throw new Error('TOKEN NEEDED');
+      if (!token) throw new UnauthorizedException('TOKEN NEEDED');
       const tokenDecoded = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
       request.user = tokenDecoded;
       return true;
     } catch (error) {
-      throw new Error('TOKEN NEEDED');
+      throw new UnauthorizedException('TOKEN NEEDED');
     }
   }
 

@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Logger } from '../logger/logger';
+import { ErrorResponse } from './error-response';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -19,9 +20,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
     const message = exception.message || 'INTERNAL SERVER ERROR';
     this.logger.error(`${exception} status: ${status}`);
-    response.status(status).json({
-      status,
-      message,
-    });
+    response.status(status).json(new ErrorResponse(message, status));
   }
 }

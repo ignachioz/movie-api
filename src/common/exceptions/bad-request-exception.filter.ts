@@ -6,6 +6,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Logger } from '../logger/logger';
+import { ErrorResponse } from './error-response';
 
 @Catch(BadRequestException)
 export class BadRequestExceptionFilter implements ExceptionFilter {
@@ -26,15 +27,9 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
       const message = Array.isArray(bodyErrorReponse.message)
         ? bodyErrorReponse.message
         : [bodyErrorReponse.message];
-      response.status(status).json({
-        status,
-        message,
-      });
+      response.status(status).json(new ErrorResponse(message, status));
     } else {
-      response.status(status).json({
-        status,
-        message: bodyErrorReponse,
-      });
+      response.status(status).json(new ErrorResponse(bodyErrorReponse, status));
     }
   }
 }

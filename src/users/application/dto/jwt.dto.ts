@@ -1,6 +1,12 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class JwtDto {
-  constructor(
-    public jwt: string,
-    public username: string,
-  ) {}
+  @ApiProperty()
+  jwt: string;
+  @ApiProperty()
+  username: string;
+  constructor(jwt: string, username: string) {
+    this.jwt = jwt;
+    this.username = username;
+  }
 }
