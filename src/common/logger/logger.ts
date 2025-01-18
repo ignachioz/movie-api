@@ -1,15 +1,10 @@
-import {
-  Injectable,
-  LoggerService,
-  LogLevel,
-  ConsoleLogger,
-} from '@nestjs/common';
+import { Injectable, LoggerService, ConsoleLogger } from '@nestjs/common';
 
 @Injectable()
 export class Logger extends ConsoleLogger implements LoggerService {
   constructor(context?: string) {
     super();
-    this.setLogLevels(['warn', 'error', 'debug']);
+    this.setLogLevels(['log', 'warn', 'error', 'debug']);
     this.setContext(context);
   }
 

@@ -5,14 +5,19 @@ import {
   HttpStatus,
   BadRequestException,
 } from '@nestjs/common';
+import { Logger } from '../logger/logger';
 
 @Catch(BadRequestException)
 export class BadRequestExceptionFilter implements ExceptionFilter {
+  constructor(private readonly logger: Logger) {}
   catch(exception: BadRequestException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const status = exception.getStatus() ?? HttpStatus.INTERNAL_SERVER_ERROR;
     const bodyErrorReponse = exception.getResponse();
+    this.logger.error(
+      `${exception} - ${JSON.stringify(bodyErrorReponse)} status: ${status}`,
+    );
     if (
       bodyErrorReponse &&
       typeof bodyErrorReponse === 'object' &&

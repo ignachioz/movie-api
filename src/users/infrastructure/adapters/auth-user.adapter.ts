@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { DatabaseException } from 'src/common/exceptions/database-exception.filter';
+import { DatabaseException } from 'src/common/exceptions/database-exception';
 import { CreateUserDto } from 'src/users/domain/dto/create-user.dto';
-import { Role } from 'src/users/domain/entities/role.entity';
 import { User } from 'src/users/domain/entities/user.entity';
 import { UserRepository } from 'src/users/domain/ports/user.repository.port';
 
