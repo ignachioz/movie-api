@@ -12,7 +12,7 @@ export class AuthUserAdapter implements UserRepository {
 
   async findUser(username: string): Promise<User> {
     try {
-      const data = await this.userDBRepository.findOne({ username }).exec();
+      const data = await this.userDBRepository.findOne({ username });
       return data;
     } catch (e) {
       throw new DatabaseException('FIND USER:' + e);
@@ -21,8 +21,7 @@ export class AuthUserAdapter implements UserRepository {
 
   async saveUser(createUserDto: CreateUserDto): Promise<User> {
     try {
-      const user = new this.userDBRepository(createUserDto);
-      return await this.userDBRepository.create(user);
+      return await this.userDBRepository.create(createUserDto);
     } catch (e) {
       throw new DatabaseException('SAVE USER:' + e);
     }

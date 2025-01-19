@@ -1,4 +1,8 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/domain/entities/user.entity';
 import {
@@ -20,7 +24,7 @@ export class LoginUserCase {
     const user: User = await this.userRepository.findUser(username);
     if (!user) throw new NotFoundException("USER DOESN'T EXIST");
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) throw new Error('INVALID CREDENTIALS');
+    if (!isValid) throw new UnauthorizedException('INVALID CREDENTIALS');
     const jwt = await this.jwtService.signAsync({
       user: user.username,
       roles: user.roles,
