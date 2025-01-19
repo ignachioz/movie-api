@@ -24,7 +24,7 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(Role, {
     each: true,
-    message: 'ROLES NOT VALID, ROLES VALID: ADMINSTRATOR - REGULAR',
+    message: 'ROLES NOT VALID, ROLES VALID: ADMINISTRATOR - REGULAR',
   })
   @ApiProperty({ required: false, example: [Role.Administrator, Role.Regular] })
   roles: Role[] = [];

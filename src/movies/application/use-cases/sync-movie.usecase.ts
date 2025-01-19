@@ -21,12 +21,12 @@ export class SyncMovieUseCase {
 
   async execute(): Promise<StatusOkDto> {
     const moviesSwapi = await this.swapiService.findAllMovies();
-    const moviePromises = moviesSwapi.map(async (movieSwapi) => {
+    for (let movieSwapi of moviesSwapi) {
       const movieExistInDB = await this.movieRepository.findMovieByField(
         'title',
         movieSwapi.title,
       );
-      if (movieExistInDB) return;
+      if (movieExistInDB) continue;
       const movieCreate = new CreateMovieDto();
       movieCreate.characters = movieSwapi.characters;
       movieCreate.planets = movieSwapi.planets;
@@ -43,8 +43,7 @@ export class SyncMovieUseCase {
       movieCreate.title = movieSwapi.title;
       movieCreate.url = movieSwapi.url;
       await this.movieRepository.saveMovie(movieCreate);
-    });
-    await Promise.all(moviePromises);
+    }
     return MovieMapper.statusOKToDto(`SYNC MOVIES OK`);
   }
 }
