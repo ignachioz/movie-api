@@ -14,7 +14,17 @@ export class UpdateMovieUseCase {
   ) {}
 
   async execute(id: string, body: UpdateMovieDto): Promise<StatusOkDto> {
-    await this.movieRepository.updateMovie(body, id);
-    return MovieMapper.statusOKToDto(`MOVIE ${body.title} UPDATE SUCCESSFULL`);
+    if (body.title) {
+      let movieInBD = await this.movieRepository.findMovieByField(
+        'title',
+        body.title,
+      );
+      if (movieInBD._id !== id)
+        throw new ConflictException(`MOVIE TITLE: ${body.title} ALREADY EXIST`);
+    }
+    let movieUpdated = await this.movieRepository.updateMovie(body, id);
+    return MovieMapper.statusOKToDto(
+      `MOVIE ${movieUpdated.title} UPDATE SUCCESSFULL`,
+    );
   }
 }
